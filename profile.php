@@ -1,42 +1,51 @@
 <section class="product-detail">
     <div class="container">
         <div class="row">
-
-                        <div class="col-md-6">
-                <div class="product-detail__gallery">
-                    <div class="product-slider-wrapper">
-                            <div>
-                                <img src="images/img/1.jpg" width="400" alt="">
-                            </div>
-                    </div>
+        <form action="edit_profile.php" method="post" enctype="multipart/form-data">
+            <div class="col-md-6 col_profile">
+                <div class="profile-img">
+                    <img id="profile-img" src="images/img/tokyo.jpg" alt="">
                 </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="product-detail__info">
-                    <div class="product-title">
-
-                        <h2><?= $_SESSION['user']['full_name'] ?></h2>
+                <div class="col-md-6">
+                 <div class="product-detail__info">
+                     <div class="product-title">
+                        <h2><input type="text" style="background-color: #f7f7f7; border: none; font-size: 25px;" name="full_name" value="<?php echo $_SESSION['user']['full_name'] ?>"></h2>
                     </div>
+                    <div class="row">
                     <div class="product-email">
                         <i class="fa fa-envelope"></i>
-                        <a href="#"><?= $_SESSION['user']['email'] ?></a>
+                        <input type="text" style="background-color: #f7f7f7; border: none;" id="email" name="email" value="<?php echo $_SESSION['user']['email'] ?>">
                     </div>
-
+                    </div>
+                </div>
+                    
+                        <a class="exit" href="handler_form/logout.php">Выход</a>
+                    
+                </div>  
+            </div>
+            <div class="col-md-6">
+                <div class="product-detail__info">
                     <div class="profile_info">
-                        <div class="item">
-                            <h6>Колличество перелетов</h6>
-                            <p><i class="awe-icon awe-icon-attraction"></i>78</p>
-                        </div>
-                        <div class="item">
-                            <h6>Время в пути</h6>
-                            <p><i class="fa fa-clock-o"></i>4 days 3 nights</p>
-                        </div>
-                        <div class="item">
-                            <h6>Посещено стран</h6>
-                            <p>Long duration</p>
-                        </div>
-                    </div>
+                                <div class="item">
+                                    <h6>Номер телефона</h6>
+                                    <input type="text" style="background-color: #f7f7f7; border: none;" name="number" value="<?php echo $_SESSION['user']['Phone'] ?>">
+                                </div>
+                                <div class="item">
+                                    <h6>Дата рождения</h6>
+                                    <input type="text" style="background-color: #f7f7f7; border: none;" name="birthday" value="<?php echo date_format(date_create($_SESSION['user']['Birthday']), 'd-m-Y'); ?>">
+                                </div>
+                                <div class="item">
+                                    <h6>Гражданство</h6>
+                                    <input type="text" style="background-color: #f7f7f7; border: none;" name="citizenship" value="<?php echo $_SESSION['user']['Citizenship_pass'] ?>">
+                                </div>
+                                <div class="item">
+                                    <h6>Страна выдачи</h6>
+                                    <input type="text" style="background-color: #f7f7f7; border: none;" name="country" value="<?php echo $_SESSION['user']['Country_pass'] ?>">
+                                </div>
+                            </div>
+            <button type="submit">редактировать</button>
+        </form>
+
 
                     <table class="ticket-price">
                         <thead>
@@ -49,7 +58,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="ticket-price">
+                              <td class="ticket-price">
                                     <em>* Vouchers valid for 12 months after purchase.</em>
                                 </td>
                                 <td class="adult">
@@ -71,7 +80,6 @@
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>

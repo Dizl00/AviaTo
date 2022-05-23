@@ -1,5 +1,4 @@
         <section class="awe-parallax register-page-demo">
-            <div class="awe-overlay"></div>
             <div class="container">
             <div class="content-title">
                         <span>Не оставайся дома</span>

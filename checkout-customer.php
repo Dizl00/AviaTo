@@ -26,10 +26,6 @@
                             <a href="#" class="showlogin">Click here to login</a>
                         </div>
 
-                        <div class="woocommerce-info">
-                            Have a coupon? <a href="#" class="showcoupon">Click here to enter your code</a>
-                        </div>
-
                         <div class="coupon">
                             <form class="checkout_coupon">
                                 <div class="form-row form-row-first">

@@ -3,7 +3,7 @@ session_start();
 
 //Передача данных из формы: id ($id_add)выбранного товара и количество товара //($kol_add) 
  
-$id_add = $_POST['tickets_id'];
+$id_add = $_POST['tickets_id']; 
 $kol_add = $_POST['quantity'];
 
 if(!isset($_SESSION['add_tickets'][$id_add])){

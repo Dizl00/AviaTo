@@ -1,39 +1,42 @@
 <?php   
 require('connect.php');
-
-        $_SESSION['sqlc'] = "SELECT * FROM `from_cat`";
+            //вывод самолетов
+        $_SESSION['sqlc'] = "SELECT * FROM `plane`";
         $sqlc_text = $_SESSION['sqlc'];
         $sqlc=$link->query($sqlc_text); 
-        $idc = $good['from_there'];
+        $idc = $good['id_plane'];
         $goodc = [];
         foreach ($sqlc as $categ) {
-            if($categ['id'] == $idc) {
+            if($categ['id_plane'] == $idc) {
                 $goodc=$categ;
                 break;
             }
         }
+
+    $_SESSION['sql_d'] = "SELECT * FROM `flight_t` WHERE `from_city` = '$good[from_city]' AND `to_city` = '$good[to_city]'";
+    $sql_text_d = $_SESSION['sql_d'];
+    $sql_d=$link->query($sql_text_d); 
 ?>
 
-
-        <!-- BREADCRUMB -->
+        <!-- переходы под шапкой -->
         <section>
             <div class="container">
                 <div class="breadcrumb">
                     <ul>
                         <li><a href="index.php">Главная</a></li>
                         <li><a href="index.php?page=flight">Авиабилеты</a></li>
-                        <li><a href="#"><?php  echo $good['to_country'];?></a></li>
+                        <li><a href="index.php?page=search&detail_country=<?php echo $good['to_country'];?>">
+                            <?php  echo $good['to_country'];?></a></li>
                         <li><span><?php  echo $good['to_city'];?></span></li>
                     </ul>
                 </div>
             </div>
         </section>
-        <!-- BREADCRUMB -->
+        <!-- конец / переходы под шапкой -->
 
-        
+        <!-- шапка карточки -->
         <section class="product-detail">
             <div class="container">
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="product-detail__info">
@@ -43,42 +46,45 @@ require('connect.php');
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-9">
                         <div class="product-tabs tabs">
                             <ul>
                                 <li>
-                                    <a href="#tabs-1">Initiative</a>
+                                    <a href="#tabs-1">    Билет    </a>
                                 </li>
+
                                 <li>
-                                    <a href="#tabs-2">Services on-flight</a>
-                                </li>
-                                <li>
-                                    <a href="#tabs-3">Good to know</a>
+                                    <a href="#tabs-2">Необходимо знать</a>
                                 </li>
                             </ul>
+
+                            <!-- конец / шапка карточки -->
+
                             <div class="product-tabs__content">
                                 <div id="tabs-1">
                                     <div class="initiative">
 
-
-                                        <!-- ITEM -->
+                                        <!-- Карточка билета -->
                                         <div class="initiative__item">
                                             <div class="initiative-top">
                                                 <div class="title">
                                                     <div class="from-to">
-                                                        <span class="from"><?php  echo $goodc['from_there'];?></span>
+                                                        <span class="from"><?php  echo $good['from_city'];?></span>
                                                         <i class="awe-icon awe-icon-arrow-right"></i>
                                                         <span class="to"><?php  echo $good['to_city'];?></span>
                                                     </div>
-                                                    <div class="time"><?php echo $good['date_from'];?> | Total time: <?php echo $good['time_travel']?></div>
+                                                    <div class="time"><?php echo date_format(date_create($good['date_from']), 'd-m-Y');?> | 
+                                                        Время перелета: 
+                                                        <?php echo date_format(date_create($good['time_travel']), 'H:i');?>        
+                                                    </div>
                                                 </div>
-                                                <div class="price">
-                                                    <span class="amount"><?php echo $good['price'].' ₽';?></span>
-                                                </div>
+                                                
                                             </div>
+                                    <?php foreach ($sql_d as $good): ?>
+
                                             <table class="initiative-table">
+
                                                 <tbody>
                                                     <tr>
                                                         <th>
@@ -87,192 +93,125 @@ require('connect.php');
                                                                     <img src="images/flight/4.jpg" alt="">
                                                                 </div>
                                                                 <div class="text">
-                                                                    <span><?php echo $good['airlines'];?></span>
-                                                                    <p>QR-829</p>
-                                                                    <span>Economy</span>
+                                                                    <p><?php echo $goodc['model'];?></p>
+                                                                </div>
+                                                                <div class="price">
+                                                                    <span class="amount"><?php echo $good['price'].' ₽';?></span>
                                                                 </div>
                                                             </div>
                                                         </th>
                                                         <td>
                                                             <div class="item-body">
                                                                 <div class="item-from">
-                                                                    <h3>HAN</h3>
-                                                                    <span class="time">14:15</span>
-                                                                    <span class="date">Thu, 12 Feb, 2015</span>
-                                                                    <p class="desc">John F Kennedy, New York</p>
+                                                                    <h3><?php echo $good['kod_from'];?></h3>
+                                                                    <span class="time">
+                                                                        <?php echo date_format(date_create($good['time_from']), 'H:i');?>
+                                                                    </span>
+                                                                    <span class="date">
+                                                                        <?php echo date_format(date_create($good['date_from']), 'd-m-Y');?>
+                                                                    </span>
+                                                                    <p class="desc"><?php echo $goodc['airport'];?></p>
                                                                 </div>
                                                                 <div class="item-time">
                                                                     <i class="fa fa-clock-o"></i>
-                                                                    <span>10h 25m</span>
+                                                                    <span>
+                                                                        <?php echo date_format(date_create($good['time_travel']), 'H:i');?>
+                                                                    </span>
                                                                 </div>
                                                                 <div class="item-to">
-                                                                    <h3>DOH</h3>
-                                                                    <span class="time">23:10</span>
-                                                                    <span class="date">Thu, 12 Feb, 2015</span>
-                                                                    <p class="desc">Doha, Doha</p>
+                                                                    <h3><?php echo $good['kod_to'];?></h3>
+                                                                    <span class="time">
+                                                                        <?php echo date_format(date_create($good['time_to']), 'H:i');?>
+                                                                    </span>
+                                                                    <span class="date">
+                                                                        <?php echo date_format(date_create($good['date_to']), 'd-m-Y');?>
+                                                                    </span>
+                                                                    <p class="desc"><?php echo $good['airport_to'];?></p>
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
+                                                    
                                                         <td>
-                                                            
+                                                                <form id="form1" name="form1" action="add_cart.php" method="post">
 
-                                                       <!--  <div class="booking-info">
-                                                            <div class="form-submit">
-                                                                <div class="add-to-cart">
-                                                                    <button type="submit">
-                                                                        <i class="awe-icon awe-icon-cart"></i>Add this to Cart
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div> -->
+                                                                    <!-- начало невидимой части формы -->
+                                                                        <input type="hidden"  name="tickets_id" value="<?php echo $good['id_flight_t']?>" />
                                                                     
+                                                                    <!-- конец невидимой части формы -->
+                                                                        
+                                                                        <button type="submit" name="submit" class="awe-btn buy">Бронировать</button> 
+
+                                                                    </form>
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
+
+                                            <?php endforeach ?>
+
                                         </div>
-                                        <!-- END / ITEM -->
-        <form id="form1" name="form1" action="add_cart.php" method="post">
-
-        <!-- начало невидимой части формы -->
-            <input type="hidden"  name="tickets_id" value="<?php echo $good['id']?>" />
-        
-        <!-- конец невидимой части формы -->
-
-            <input class='add_to_cart' type="submit" value="В корзину" name="submit">
-        </form>
-<!-- обработчик событий для счетчика количества товаров -->
-<script>
-    var numCount = document.getElementById('num_count');
-    var plusBtn = document.getElementById('button_plus');
-    var minusBtn = document.getElementById('button_minus');
-    plusBtn.onclick = function() {
-        var qty = parseInt(numCount.value);
-        qty = qty + 1;
-        numCount.value = qty;
-    }
-    minusBtn.onclick = function() {
-        var qty = parseInt(numCount.value);
-        if(qty>1){
-            qty = qty - 1;
-        }
-        numCount.value = qty;
-    }
-</script>
+                                        <!-- конец / карточка билета -->
                                     </div>
                                 </div>
-<!--                                 <div id="tabs-2">
-                                    <div class="services-on-flight">
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Entertainment</span>
-                                            </label>
-                                        </div>
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Communication</span>
-                                            </label>
-                                        </div>
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Inflight Magazine</span>
-                                            </label>
-                                        </div>
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Inflight Cuisine & Beverages</span>
-                                            </label>
-                                        </div>
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Your Health Inflight</span>
-                                            </label>
-                                        </div>
-                                        <div class="item">
-                                            <label>
-                                                <input type="checkbox" name="serviceitem">
-                                                <i class="awe-icon awe-icon-check"></i>
-                                                <span>Inflight Duty Free</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div> -->
-<!--                                 <div id="tabs-3">
+                                <!-- раздел справка -->
+                                <div id="tabs-2">
                                     <table class="good-to-know-table">
                                         <tbody>
                                             <tr>
                                                 <th>
-                                                    <p>Check in</p>
+                                                    <p>Отмена / предоплата</p>
                                                 </th>
                                                 <td>
-                                                    <p>From 15:00 hours</p>
+                                                    <p>За бронирование и его отмену в установленный срок дополнительная плата не взымается. </p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>
-                                                    <p>Check out</p>
+                                                    <p>Дополнительная норма багажа</p>
                                                 </th>
                                                 <td>
-                                                    <p>Until 11:00 hours</p>
+                                                    <p>Стоимость доплаты за дополнительный багаж устанавливается в соответствии со временем обращения.</p>
+                                                    <p>Стоимость дополнительного места багажа рассчитывается по специальной формуле исходя из тарифов за превышение нормативов, принятых для определенных направлений. </p>
+                                                    <p></p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>
-                                                    <p>Cancellation / prepayment</p>
+                                                    <p>Все параметры багажа подразделяют на три категории</p>
+                                                </th>
+                                                    <td>
+                                                        <p>Число мест. Каждый провозимый чемодан либо сумка считается одним местом. Если их количество больше одного, назначается доплата.</p>
+                                                        <p>Вес. Для багажа в случае перевеса чемодана придется заплатить по установленному тарифу. Это касается также превышения веса сумки, входящей в норму количества мест для бесплатного провоза.</p>
+                                                        <p>Габариты. Регистрируемые багажные предметы при суммировании их длины, высоты и ширины должны укладываться в 203 см. В салон можно взять сумку, не превышающую размеров 55х40х20 см.</p>
+                                                    </td>
+                                            </tr>   
+                                            <tr>
+                                                <th>
+                                                    <p>Интернет</p>
                                                 </th>
                                                 <td>
-                                                    <p>Cancellation and prepayment policies vary according to room type. Please check the room conditions when selecting your room above.</p>
+                                                    <p>Бесплатно! На борту самолета Wi-Fi предоставляется бесплатно.</p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>
-                                                    <p>Children and extra beds</p>
+                                                    <p>Животные</p>
                                                 </th>
                                                 <td>
-                                                    <p>The maximum number of children’s cots/cribs in a room is 1.</p>
+                                                    <p>Домашние животные разрешены. Может взиматься дополнительная плата.</p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>
-                                                    <p>Internet</p>
+                                                    <p>Группы</p>
                                                 </th>
                                                 <td>
-                                                    <p>free! WiFi is available in all areas and is free of charge.</p>
-                                                    <p><span class="light">Free</span>children under 2 years stay free of charge when using existing beds.</p>
-                                                    <p><span class="light">Free</span>children under 2 years stay free of charge when using existing beds.</p>
+                                                    <p>При бронировании для более чем 11 посадочных мест могут применяться другие правила и взиматься дополнительная плата. Уточнить информацию можно написав на нашу почту.</p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>
-                                                    <p>Pets</p>
-                                                </th>
-                                                <td>
-                                                    <p>Pets are allowed. Charges may be applicable.</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>
-                                                    <p>Groups</p>
-                                                </th>
-                                                <td>
-                                                    <p>When booking for more than 11 persons, different policies and additional supplements may apply.</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>
-                                                    <p>Accepted cards for payment</p>
+                                                    <p>Оплата принимается следующими картами</p>
                                                 </th>
                                                 <td>
                                                     <p><img src="images/paypal2.png" alt=""></p>
@@ -280,78 +219,19 @@ require('connect.php');
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div> -->
+                                </div>
+                        <!-- конец / раздел справка -->
+
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="detail-sidebar">
                             <div class="call-to-book">
-                                <i class="awe-icon awe-icon-phone"></i>
-                                <em>Call to book</em>
-                                <span>+1-888-8765-1234</span>
-                            </div>
-                            <div class="booking-info">
-                                <h3>Booking info</h3>
-                                <div class="form-group">
-                                    <div class="form-elements form-adult">
-                                        <label>Adult</label>
-                                        <div class="form-item">
-                                            <select class="awe-select">
-                                                <option>0</option>
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                            </select>
-                                        </div>
-                                        <span>12 yo and above</span>
-                                    </div>
-                                    <div class="form-elements form-kids">
-                                        <label>Kids</label>
-                                        <div class="form-item">
-                                            <select class="awe-select">
-                                                <option>0</option>
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                            </select>
-                                        </div>
-                                        <span>11 and under</span>
-                                    </div>
-                                </div>
-                                <div class="form-baggage-weight">
-                                    <label>Extra baggage weight / person</label>
-                                    <div class="form-item">
-                                        <select class="awe-select">
-                                            <option>15 kg - $20</option>
-                                            <option>15 kg - $20</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-item">
-                                        <select class="awe-select">
-                                            <option>25 kg - $40</option>
-                                            <option>25 kg - $40</option>
-                                        </select>
-                                    </div>
-                                    <span>Cabin 7kg/person for free</span>
-                                </div>
-                                <div class="price">
-                                    <em>Total for this booking</em>
-                                    <span class="amount">$5,923</span>
-                                </div>
-                                <div class="form-submit">
-                                    <div class="add-to-cart">
-                                        <button type="submit">
-                                            <i class="awe-icon awe-icon-cart"></i>Add this to Cart
-                                        </button>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-    </div>
-    <!-- END / PAGE WRAP -->    

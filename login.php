@@ -1,5 +1,4 @@
         <section class="awe-parallax login-page-demo">
-            <div class="awe-overlay"></div>
             <div class="container">
                 <div class="login-register-page__content">
                     <div class="content-title">
@@ -8,8 +7,8 @@
                     </div>
                     <form action="handler_form/signin.php" method="post">
                         <div class="form-item">
-                            <label>Email</label>
-                            <input type="email" name="email">
+                            <label>Логин</label>
+                            <input type="text" name="login">
                         </div>
                         <div class="form-item">
                             <label>Пароль</label>

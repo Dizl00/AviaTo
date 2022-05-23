@@ -8,51 +8,155 @@ require('templates/header.php');
     require('connect.php');
 //подключение к бд
     if(!isset($_SESSION['sql'])){
-        $_SESSION['sql'] = "SELECT * FROM `tickets`";
+        $_SESSION['sql'] = "SELECT * FROM `timetable`
+            INNER JOIN `flight_t` ON timetable.id_flight_t = flight_t.id_flight_t";
     }
     $sql_text = $_SESSION['sql'];
     $sql=$link->query($sql_text); 
 
 
+//переход по страницам
     $page=$_GET['page'];
-
+//переход на основную страницу
     if (!isset($page)) {
         require('templates/main.php');
     }  elseif ($page == 'index') {
         require('templates/main.php');
+//переход на страницу с билетами
     } elseif ($page == 'flight') {
         require('flight.php');
     } elseif ($page == 'profile') {
+//переход на профиль
         require('profile.php');
+//переход на бронирование
+    } elseif ($page == 'bron') {
+        require('bron.php');
+//переход на страницу входа в личный кабине
     } elseif ($page == 'login') {
         if ($_SESSION['user']) {
             require('profile.php');
         }else{
             require('login.php');
         }
+//переход на страницу регистрации пользователя
     } elseif ($page == 'register') {
         require('register.php');
+//переход на корзину с билетами
     } elseif ($page == 'yourcart') {
         require('checkout-yourcart.php');
+//переход на корзину с проверкой данных пользователя
     } elseif ($page == 'checkcustomer') {
         require('checkout-customer.php');
+//переход на корзину с оплатой товара
     } elseif ($page == 'checkcomplete') {
         require('checkout-complete.php');
+//переход на страницу с конкретным билетом
     } elseif ($page == 'detail') {
         $idg = $_GET['id'];
         $good = [];
+
         
         foreach ($sql as $ticket) {
-            if($ticket['id'] == $idg) {
+            if($ticket['id_flight_t'] == $idg) {
                 $good=$ticket;
                 break;
             }
         }
 
+        /*$id_to = $_GET['to_city'];
+        $id_from = $_GET['from_city'];
+        $good = [];
         
+        foreach ($sql as $ticket) {
+            if($ticket['to_city'] == $id_to) {
+                if ($ticket['from_city'] == $id_from) {
+                    $good=$ticket;
+                }
+            }
+        }*/
+
     require('flight-detail.php');
 
-    //категории
+    //поиск по дате и времени
+    
+    } elseif ($page == 'search') {
+        $sql_text="SELECT *
+                  FROM `flight_t` WHERE ";
+        if (isset($_SESSION['query'])) {
+            $sql_text .=$_SESSION['query'];
+
+            if (isset($_SESSION['query_from'])) {
+                $sql_text2=$_SESSION['query_from'];
+                $sql_text .= " AND ";
+                $sql_text .= $sql_text2;
+                $sql = $link -> query($sql_text);
+                unset($_SESSION['query_from']);
+                unset($_SESSION['query']);
+
+
+            }else{
+                $sql = $link -> query($sql_text);
+                unset($_SESSION['query']);
+
+            }
+        }else{
+                if (isset($_SESSION['query_from'])) {
+                    $sql_text2=$_SESSION['query_from'];
+                    $sql_text .= $sql_text2;
+                    
+                    $sql = $link -> query($sql_text);
+                    unset($_SESSION['query_from']);
+
+
+                }
+            }
+if (isset($_GET['detail_country'])) {
+    $sql_text3=$_GET['detail_country'];
+    $sql_query_detail = "SELECT *
+                  FROM `flight_t` WHERE `to_country` LIKE '%$sql_text3%'";   
+    $sql = $link -> query($sql_query_detail);
+}
+
+if (isset($_SESSION['query_date_from'])) {
+
+$date = $_SESSION['query_date_from'];
+$d1 = strtotime($date); // переводит из строки в дату
+$date2 = date("Y-m-d", $d1);
+$sql_query_date_from = "SELECT * FROM `flight_t` WHERE `date_from` >= '$date2'";
+    $sql = $link -> query($sql_query_date_from);
+    unset($_SESSION['query_date_from']);
+}
+
+if (isset($_SESSION['query_date_to'])) {
+
+$date_to = $_SESSION['query_date_to'];
+$d1_to = strtotime($date_to); // переводит из строки в дату
+$date2_to = date("Y-m-d", $d1_to);
+$sql_query_date_to = "SELECT * FROM `flight_t` WHERE `date_from` <= '$date2_to'";
+    $sql = $link -> query($sql_query_date_to);
+var_dump($sql);
+    unset($_SESSION['query_date_to']);
+}
+
+    require('flight.php');
+}elseif ($page == 'searchFrom') {
+
+    $sql_text=$_SESSION['query_from'];
+    $sql = $link -> query($sql_text);
+
+    require('flight.php');
+}
+//сортировка по алфавитному порядку
+ elseif ($page == 'sort') {
+    $idg = $_GET['id_sort'];
+    if($idg == 1){
+        $sql_text.= " ORDER BY `to_city`";
+    }if($idg == 2){
+        $sql_text.= " ORDER BY `to_city` DESC";
+    }
+    $sql=$link->query($sql_text);
+
+    require('flight.php');
 }
 ?>
 
@@ -63,8 +167,8 @@ require('templates/footer.php');
 ?>
 
 
-    <!-- REVOLUTION DEMO -->
-    <script type="text/javascript" src="revslider-demo/js/jquery.themepunch.revolution.min.js"></script>
+<!-- карусель -->
+     <script type="text/javascript" src="revslider-demo/js/jquery.themepunch.revolution.min.js"></script>
     <script type="text/javascript" src="revslider-demo/js/jquery.themepunch.tools.min.js"></script>
     <script type="text/javascript">
             $('.timepicker-24-hr').wickedpicker({now: '0:00', twentyFour: true, title:
@@ -134,7 +238,6 @@ require('templates/footer.php');
 
                 shuffle:"off",
 
-                autoHeight:"off",
                 forceFullWidth:"off",
                 
                 
