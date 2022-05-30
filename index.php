@@ -25,34 +25,51 @@ require('templates/header.php');
 //переход на страницу с билетами
     } elseif ($page == 'flight') {
         require('flight.php');
-    } elseif ($page == 'profile') {
 //переход на профиль
+    } elseif ($page == 'profile') {
         require('profile.php');
-//переход на бронирование
-    } elseif ($page == 'bron') {
-        require('bron.php');
 //переход на страницу входа в личный кабине
     } elseif ($page == 'login') {
         if ($_SESSION['user']) {
-            require('profile.php');
+            if ($_SESSION['user']['role'] == 1) {
+                require('admin.php');    
+            } else{
+                require('profile.php');
+            }
         }else{
             require('login.php');
         }
-//переход на страницу регистрации пользователя
+//переход на страницу администратора
+    } elseif ($page == 'admin') {
+        require('admin.php');
+//переход на корзину с билетами
     } elseif ($page == 'register') {
         require('register.php');
-//переход на корзину с билетами
-    } elseif ($page == 'yourcart') {
-        require('checkout-yourcart.php');
+//переход на удаление билетов
+    } elseif ($page == 'delete') {
+        require('delete.php');
 //переход на корзину с проверкой данных пользователя
     } elseif ($page == 'checkcustomer') {
         require('checkout-customer.php');
+//переход на cхему с билетами пользователя
+    } elseif ($page == 'scheme') {
+
+        $id_flight=$_GET['id_flight'];
+        $id_timetable=$_GET['id_timetable'];
+        $_SESSION['id_flight']=$id_flight;
+        $_SESSION['id_timetable']=$id_timetable;
+
+        require('scheme/scheme.php');
+//переход на страницу для отзывов
+    } elseif ($page == 'contact') {
+        require('contact.php');
 //переход на корзину с оплатой товара
     } elseif ($page == 'checkcomplete') {
         require('checkout-complete.php');
 //переход на страницу с конкретным билетом
     } elseif ($page == 'detail') {
         $idg = $_GET['id'];
+        $_SESSION['id_flight_t'] = $idg;
         $good = [];
 
         

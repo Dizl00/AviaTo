@@ -13,7 +13,9 @@ require('connect.php');
             }
         }
 
-    $_SESSION['sql_d'] = "SELECT * FROM `flight_t` WHERE `from_city` = '$good[from_city]' AND `to_city` = '$good[to_city]'";
+    $_SESSION['sql_d'] = "SELECT * FROM `timetable`
+            INNER JOIN `flight_t` ON timetable.id_flight_t = flight_t.id_flight_t
+            WHERE `from_city` = '$good[from_city]' AND `to_city` = '$good[to_city]'";
     $sql_text_d = $_SESSION['sql_d'];
     $sql_d=$link->query($sql_text_d); 
 ?>
@@ -74,14 +76,32 @@ require('connect.php');
                                                         <i class="awe-icon awe-icon-arrow-right"></i>
                                                         <span class="to"><?php  echo $good['to_city'];?></span>
                                                     </div>
-                                                    <div class="time"><?php echo date_format(date_create($good['date_from']), 'd-m-Y');?> | 
+                                                    <div class="time">
                                                         Время перелета: 
                                                         <?php echo date_format(date_create($good['time_travel']), 'H:i');?>        
                                                     </div>
                                                 </div>
                                                 
                                             </div>
-                                    <?php foreach ($sql_d as $good): ?>
+                                    <?php $tarif = 0; 
+                                    foreach ($sql_d as $good): 
+                                        $tarif += 1234;
+
+        $_SESSION['sql_date'] = "SELECT * FROM `timetable`";
+        $sql_date_text = $_SESSION['sql_date'];
+        $sql_date=$link->query($sql_date_text); 
+        $id_sql_flight = $good['id_flight_t'];
+        $good_date = [];
+        foreach ($sql_date as $date) {
+            if($date['id_flight_t'] == $id_sql_flight) {
+                $good_date=$date;
+                /*$_SESSION['id_timetable'] = $date['id_timetable'];
+                var_dump($_SESSION['id_timetable']);*/
+                break;
+            }
+        }
+        
+                                        ?>
 
                                             <table class="initiative-table">
 
@@ -100,7 +120,7 @@ require('connect.php');
                                                                 </div>
                                                             </div>
                                                         </th>
-                                                        <td>
+                                                        <td style="  width: 36%; ">
                                                             <div class="item-body">
                                                                 <div class="item-from">
                                                                     <h3><?php echo $good['kod_from'];?></h3>
@@ -108,7 +128,7 @@ require('connect.php');
                                                                         <?php echo date_format(date_create($good['time_from']), 'H:i');?>
                                                                     </span>
                                                                     <span class="date">
-                                                                        <?php echo date_format(date_create($good['date_from']), 'd-m-Y');?>
+                                                                        <?php echo date_format(date_create($date['date_from']), 'd-m-Y');?>
                                                                     </span>
                                                                     <p class="desc"><?php echo $goodc['airport'];?></p>
                                                                 </div>
@@ -124,28 +144,132 @@ require('connect.php');
                                                                         <?php echo date_format(date_create($good['time_to']), 'H:i');?>
                                                                     </span>
                                                                     <span class="date">
-                                                                        <?php echo date_format(date_create($good['date_to']), 'd-m-Y');?>
+                                                                        <?php echo date_format(date_create($date['date_to']), 'd-m-Y');?>
                                                                     </span>
                                                                     <p class="desc"><?php echo $good['airport_to'];?></p>
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                    
-                                                        <td>
-                                                                <form id="form1" name="form1" action="add_cart.php" method="post">
+                                                        
+                                                        <form id="form1" name="form1" action="index.php?page=scheme&id_flight=<?php echo $good['id_flight_t']?>&id_timetable=<?php echo $date['id_timetable']; ?>" method="post">
 
                                                                     <!-- начало невидимой части формы -->
-                                                                        <input type="hidden"  name="tickets_id" value="<?php echo $good['id_flight_t']?>" />
+                                        <?php var_dump($good['id_flight_t']); var_dump($date['id_timetable']); ?>
+                                                              
+                                                                        <?php 
+                                                                            /*$_SESSION['id_flight_t'] = $good['id_flight_t'];
+                                                                            
+                                                                            
+                                                                            var_dump($_SESSION['id_flight_t']);
+*/
+                                                                        ?>
+
                                                                     
                                                                     <!-- конец невидимой части формы -->
-                                                                        
-                                                                        <button type="submit" name="submit" class="awe-btn buy">Бронировать</button> 
 
+<!-- ВЫБОР ТАРИФА -->
+<?php 
+
+    $n = 3400;
+    $b = 4600;
+    $t1 = $tarif + 1;
+    $t2 = $tarif+ 2;
+    $t3 = $tarif + 3;
+        ?>
+<!-- ТАРИФ ЭКОНОМ -->
+        <td style="max-width: 50px; max-height: 50px; vertical-align: super;">
+        <script type="text/javascript">
+            function showHide(element_id) {
+                //Если элемент с id-шником element_id существует
+                if (document.getElementById(element_id)) { 
+                    //Записываем ссылку на элемент в переменную obj
+                    var obj = document.getElementById(element_id); 
+                    //Если css-свойство display не block, то: 
+                    if (obj.style.display != "block") { 
+                        obj.style.display = "block"; //Показываем элемент
+                    }
+                    else obj.style.display = "none"; //Скрываем элемент
+                }
+                //Если элемент с id-шником element_id не найден, то выводим сообщение
+                else alert("Элемент с id: " + element_id + " не найден!"); 
+            }   
+        </script>
+<!-- При клике запускаем функцию showHide, и передаем параметр 
+        id-шник элемента который нужно показать/скрыть -->
+        <a href="javascript:void(0)" onclick="showHide('<?php echo $t1 ?>')" ><h6 class="tarif">Эконом</h6></a><br/><br/>
+        <div id="<?php echo $t1 ?>" style="display: none; font-size: 12px; margin-top: -44px;">
+            <p style="font-size: 14px;"><b> Багаж: </b></p>
+            Багаж платный</br>
+            Ручная кладь 1 сумка до 10 кг,</br> до 55x40x23 см
+
+            <p></p>
+            <p style="font-size: 14px;"><b>Условия:</b></p>
+            Обмен со сбором</br>
+            Возврат недоступен
+
+            <p></p>
+            <p style="font-size: 14px;"><b>Услуги:</b></p>
+            Выбор места
+            <div style="margin-top: 8px;">
+    <button type="submit" name="bron-min" class="tarif-btn" style="font-size: 14px;">Продолжить</button> 
+    </div>
+        </div>
+        </td>
+<!-- КОНЕЦ / ТАРИФ ЭКОНОМ -->
+<!-- ТАРИФ СРЕДНИЙ -->
+        <td style="max-width: 50px; max-height: 50px; vertical-align: super;">
+        <a href="javascript:void(0)" onclick="showHide('<?php echo $t2 ?>')"><h6 style="color: #0091ea;">Стандарт</h6></a><br/><br/>
+        <div id="<?php echo $t2 ?>" style="display: none; font-size: 12px;margin-top: -44px;">
+            <p style="font-size: 14px;">+<?php echo $n?> ₽ </p>
+            <p style="font-size: 14px;"><b> Багаж: </b></p>
+            1 сумка 23 кг</br>
+            Ручная кладь 1 сумка до 10 кг, </br>
+            до 55x40x23 см
+
+            <p></p>
+            <p style="font-size: 14px;"><b>Условия:</b></p>
+            Обмен со сбором</br>
+            Возврат со сбором
+
+            <p></p>
+            <p style="font-size: 14px;"><b>Услуги:</b></p>
+            Выбор места
+     <button type="submit" name="bron-norm" class="tarif-btn" style="font-size: 14px;">Продолжить</button> 
+        </div>
+        </td>
+<!-- КОНЕЦ / ТАРИФ СРЕДНИЙ -->
+<!-- ТАРИФ БИЗНЕНС -->
+        <td style="max-width: 50px; max-height: 50px; vertical-align: super;">
+ 
+        <a href="javascript:void(0)" onclick="showHide('<?php echo $t3 ?>')"><h6 style="color: #0091ea;">Бизнес</h6></a><br/><br/>
+        <div id="<?php echo $t3 ?>" style="display: none; font-size: 12px; margin-top: -44px;">
+<p style="font-size: 14px;">+<?php echo $b ?> ₽ </p>
+<p style="font-size: 14px;"><b> Багаж: </b></p>
+1 сумка 32 кг</br>
+Ручная кладь 1 сумка до 10 кг,</br> до 55x40x23 см
+<p></p>
+<p style="font-size: 14px;"><b>Условия:</b></p>
+Обмен без сборов</br>
+Полный возврат
+
+<p></p>
+<p style="font-size: 14px;"><b>Услуги:</b></p>
+Лучшие места</br>
+Выбор питания</br>
+Приоритет в аэропорту</br>
+Бизнес зал
+
+     <button type="submit" name="bron-max" class="tarif-btn" style="font-size: 14px;">Продолжить</button> 
+
+        </div>
+        </td>
+    </tr>
+    <!-- КОНЕЦ / ТАРИФ БИЗНЕНС -->
                                                                     </form>
-                                                        </td>
-                                                    </tr>
+                                        
                                                 </tbody>
                                             </table>
+<!-- КОНЕЦ / ВЫБОР ТАРИФА -->
 
                                             <?php endforeach ?>
 
@@ -153,6 +277,7 @@ require('connect.php');
                                         <!-- конец / карточка билета -->
                                     </div>
                                 </div>
+
                                 <!-- раздел справка -->
                                 <div id="tabs-2">
                                     <table class="good-to-know-table">

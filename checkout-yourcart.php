@@ -46,12 +46,14 @@ session_start();
     $sql_m= $link->query("SELECT * FROM `flight_t`");
     $Sum = 0;
     $add_product =  $_SESSION['add_tickets'];
+    //var_dump($add_product);
     //проверяем, что корзина не пуста иначе будет выходить ошибка
     if(isset($add_product)){
     //пербераем массив с добавленными товарами и выбираем id товара
    foreach($add_product as $key => $value){
         $a = $key;  //id билета
         $kol =  $_SESSION['add_tickets'][$a];
+
         $good_m = [];
         foreach ($sql_m as $product_m) {
             if($product_m['id_flight_t'] == $a){

@@ -7,6 +7,8 @@
                     </div>
                     <form action="handler_form/signin.php" method="post">
                         <div class="form-item">
+                                                    <h6 style="color: #ff2222;"><?php echo $_SESSION['message']; ?></h6>
+
                             <label>Логин</label>
                             <input type="text" name="login">
                         </div>
@@ -14,15 +16,10 @@
                             <label>Пароль</label>
                             <input type="password" name="password">
                         </div>
-                        <a href="#" class="forgot-password">Забыли пароль?</a>
                         <div class="form-actions">
                             <input type="submit" value="Войти">
                         </div>
-                        <?php
-
-                            echo $_SESSION['message'];
-                        
-                    ?> 
+                        <?php echo $_SESSION['message']; ?> 
                     </form>
                     <div class="login-register-link">
                         Ещё нет аккаунта? <a href="index.php?page=register">Зарегестрируйтесь ТУТ!</a>

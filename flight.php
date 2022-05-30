@@ -19,15 +19,13 @@ session_start();
                     <div class="filter-item-wrapper">
 
                         <!-- цикл для вывода всех билетов -->
-                <?php  foreach ($sql as $good): 
-
-                ?>
+                <?php  foreach ($sql as $good):               ?>
 
                         <!-- карточка -->
                         <div class="flight-item" id="item">
                             <div class="item-media">
                                 <div id="image_flight" class="image-cover">
-                                    <img id="image_flight_img" src="<?php echo $good['img'];?> " alt="">
+                                    <img id="image_flight_img" style="    height: 165px; width: auto;" src="<?php echo $good['img'];?> " alt="">
                                 </div>
                             </div>
                             <div class="item-body">
@@ -74,7 +72,6 @@ session_start();
                             <div class="item-price-more">
                                 <div class="price">
                                     <span class="amount"><?php echo $good['price'].'₽';?></span>
-                                    exclude Fare
                                 </div>
                                 <a href="index.php?page=detail&id=<?php echo $good['id_flight_t'];?>" class="awe-btn">Бронировать</a>
                             </div>
